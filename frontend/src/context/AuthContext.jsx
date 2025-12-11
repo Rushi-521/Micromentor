@@ -1,5 +1,6 @@
-import { createContext, useState, useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useState, useEffect } from 'react';
+import {jwtDecode} from 'jwt-decode';
 
 export const AuthContext = createContext();
 
@@ -10,13 +11,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
+
     if (token && savedUser) {
       try {
         const decoded = jwtDecode(token);
         const now = Date.now() / 1000;
-        
-        if (decoded.exp > now) {
+
+        if (decoded && decoded.exp && decoded.exp > now) {
           setUser(JSON.parse(savedUser));
         } else {
           localStorage.removeItem('token');
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
       }
     }
+
     setLoading(false);
   }, []);
 
@@ -49,3 +51,4 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+export default AuthProvider;
